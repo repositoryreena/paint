@@ -5,6 +5,8 @@ const lineThickness = document.getElementById('line-thickness');
 const clearButton = document.getElementById('clear-button');
 const saveButton = document.getElementById('save-button');
 const toolRadios = document.getElementsByName('tool');
+const textInput = document.getElementById('text-input');
+const fontSelector = document.getElementById('font-selector');
 
 let isDrawing = false;
 let currentColor = colorPicker.value;
@@ -13,6 +15,10 @@ let currentTool = 'pencil';
 
 function startDrawing(e) {
   isDrawing = true;
+  if (currentTool === 'text') {
+    // Prevent text input when starting text tool
+    e.preventDefault();
+  }
   draw(e);
 }
 
@@ -32,7 +38,6 @@ function draw(e) {
   } else if (currentTool === 'brush' || currentTool === 'eraser') {
     context.lineWidth = currentLineThickness;
   }
-
   const x = e.clientX - canvas.getBoundingClientRect().left;
   const y = e.clientY - canvas.getBoundingClientRect().top;
 
@@ -66,12 +71,28 @@ function drawTriangle(x, y, size) {
   context.strokeStyle = currentColor;
   context.lineWidth = currentLineThickness;
   context.beginPath();
-  const halfSize = size / 2;
-  context.moveTo(x, y - halfSize);
-  context.lineTo(x - halfSize, y + halfSize);
-  context.lineTo(x + halfSize, y + halfSize);
+  context.moveTo(x, y - size / 2);
+  context.lineTo(x - size / 2, y + size / 2);
+  context.lineTo(x + size / 2, y + size / 2);
   context.closePath();
   context.stroke();
+}
+
+function drawText(x, y) {
+  const text = textInput.value;
+  const selectedFont = fontSelector.value;
+
+  // Define font styles here
+  const fontStyles = {
+    'Dancing Script, cursive': 'Dancing Script, cursive',
+    'Arial, sans-serif': 'Arial, sans-serif',
+    'Times New Roman, serif': 'Times New Roman, serif',
+    'Verdana, sans-serif': 'Verdana, sans-serif'
+  };
+
+  context.font = `24px ${fontStyles[selectedFont]}`;
+  context.fillStyle = currentColor;
+  context.fillText(text, x, y);
 }
 
 function drawShape(e) {
@@ -90,6 +111,8 @@ function drawShape(e) {
   } else if (currentTool === 'triangle') {
     const size = currentLineThickness * 4;
     drawTriangle(x, y, size);
+  } else if (currentTool === 'text') {
+    drawText(x, y);
   }
 }
 
@@ -132,6 +155,12 @@ for (const toolRadio of toolRadios) {
       context.lineWidth = 2;
     } else if (currentTool === 'brush' || currentTool === 'eraser') {
       context.lineWidth = currentLineThickness;
+    } else if (currentTool === 'text') {
+      textInput.style.display = 'block'; // Show text input box
+      fontSelector.style.display = 'block'; // Show font selector
+    } else {
+      textInput.style.display = 'none'; // Hide text input box for other tools
+      fontSelector.style.display = 'none'; // Hide font selector for other tools
     }
   });
 }

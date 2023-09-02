@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Dancing+Script&display=swap">
+
     <title>Enhanced Canvas Drawing Game</title>
 </head>
 <body>
@@ -16,19 +18,32 @@
         
         <!-- Add radio buttons for tools -->
         <label>Tools:</label>
-<input type="radio" name="tool" id="pencil" value="pencil" checked>
-<label for="pencil">Pencil</label>
-<input type="radio" name="tool" id="brush" value="brush">
-<label for="brush">Brush</label>
-<input type="radio" name="tool" id="eraser" value="eraser">
-<label for="eraser">Eraser</label>
-<input type="radio" name="tool" id="rectangle" value="rectangle">
-<label for="rectangle">Rectangle</label>
-<input type="radio" name="tool" id="circle" value="circle">
-<label for="circle">Circle</label>
-<input type="radio" name="tool" id="triangle" value="triangle">
-<label for="triangle">Triangle</label>
+        <input type="radio" name="tool" id="pencil" value="pencil" checked>
+        <label for="pencil">Pencil</label>
+        <input type="radio" name="tool" id="brush" value="brush">
+        <label for="brush">Brush</label>
+        <input type="radio" name="tool" id="eraser" value="eraser">
+        <label for="eraser">Eraser</label>
+        <input type="radio" name="tool" id="rectangle" value="rectangle">
+        <label for="rectangle">Rectangle</label>
+        <input type="radio" name="tool" id="circle" value="circle">
+        <label for="circle">Circle</label>
+        <input type="radio" name="tool" id="triangle" value="triangle">
+        <label for="triangle">Triangle</label>
+        <input type="radio" name="tool" id="text" value="text">
+        <label for="text">Text</label>
 
+        <!-- Text input for user to input text -->
+        <input type="text" id="text-input" placeholder="Enter text">
+        
+        <!-- Font selection dropdown -->
+        <select id="font-selector">
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="Times New Roman, serif">Times New Roman</option>
+          <option value="Verdana, sans-serif">Verdana</option>
+          <!-- Add more font options here, including Google Fonts -->
+          <option value="Dancing Script, cursive">Dancing Script</option>
+        </select>
 
         <button id="clear-button">Clear Canvas</button>
         <button id="save-button">Save Drawing</button>
