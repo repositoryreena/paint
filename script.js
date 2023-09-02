@@ -4,95 +4,114 @@ const colorPicker = document.getElementById('color-picker');
 const lineThickness = document.getElementById('line-thickness');
 const clearButton = document.getElementById('clear-button');
 const saveButton = document.getElementById('save-button');
+const toolRadios = document.getElementsByName('tool');
 
 let isDrawing = false;
-
-// Initialize drawing properties
 let currentColor = colorPicker.value;
 let currentLineThickness = lineThickness.value;
+let currentTool = 'pencil';
 
-// Function to start drawing
 function startDrawing(e) {
   isDrawing = true;
   draw(e);
 }
 
-// Function to stop drawing
 function stopDrawing() {
   isDrawing = false;
-  context.beginPath(); // Start a new path for separate lines
+  context.beginPath();
 }
 
-// Function to draw on the canvas
 function draw(e) {
   if (!isDrawing) return;
 
-  context.lineWidth = currentLineThickness; // Set line thickness
-  context.lineCap = 'round'; // Set line cap style
-  context.strokeStyle = currentColor; // Set line color
+  context.strokeStyle = currentColor;
+  context.lineCap = 'round';
 
-  // Draw a line from the previous point to the current point
-  context.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
-  context.stroke();
-  context.beginPath(); // Start a new path for smoother lines
-  context.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+  if (currentTool === 'pencil') {
+    context.lineWidth = 2; // Narrower line for a pencil
+  } else if (currentTool === 'brush' || currentTool === 'eraser') {
+    context.lineWidth = currentLineThickness; // Adjust line thickness for brush and eraser
+  }
+
+  if (currentTool === 'pencil' || currentTool === 'brush') {
+    context.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+    context.stroke();
+    context.beginPath();
+    context.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+  } else if (currentTool === 'eraser') {
+    context.clearRect(
+      e.clientX - canvas.getBoundingClientRect().left - context.lineWidth / 2,
+      e.clientY - canvas.getBoundingClientRect().top - context.lineWidth / 2,
+      context.lineWidth,
+      context.lineWidth
+    );
+  }
 }
 
-// Event listeners for mouse and touch events
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mouseup', stopDrawing);
 canvas.addEventListener('mousemove', draw);
 
 canvas.addEventListener('touchstart', (e) => {
-  e.preventDefault(); // Prevent default touch behavior
+  e.preventDefault();
   startDrawing(e.touches[0]);
 });
 
 canvas.addEventListener('touchend', stopDrawing);
 canvas.addEventListener('touchmove', (e) => {
-  e.preventDefault(); // Prevent default touch behavior
+  e.preventDefault();
   draw(e.touches[0]);
 });
 
-// Event listener to clear the canvas
 clearButton.addEventListener('click', () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-// Event listener for color picker
 colorPicker.addEventListener('input', (e) => {
   currentColor = e.target.value;
 });
 
-// Event listener for line thickness adjustment
 lineThickness.addEventListener('input', (e) => {
   currentLineThickness = e.target.value;
+
+  // Update line thickness for brush and eraser when slider changes
+  if (currentTool === 'brush' || currentTool === 'eraser') {
+    context.lineWidth = currentLineThickness;
+  }
 });
 
-// Function to save the canvas as an image
+for (const toolRadio of toolRadios) {
+  toolRadio.addEventListener('change', (e) => {
+    currentTool = e.target.value;
+
+    // Reset line thickness when changing tools
+    if (currentTool === 'pencil') {
+      context.lineWidth = 2; // Narrower line for a pencil
+    } else if (currentTool === 'brush' || currentTool === 'eraser') {
+      context.lineWidth = currentLineThickness; // Set to current slider value for brush and eraser
+    }
+  });
+}
+
 function saveDrawing() {
-  const image = canvas.toDataURL('image/png'); // Convert canvas content to a data URL
+  const image = canvas.toDataURL('image/png');
   const link = document.createElement('a');
   link.href = image;
-  link.download = 'drawing.png'; // Set the filename for the saved image
+  link.download = 'drawing.png';
   link.click();
 }
 
-// Event listener for the "Save Drawing" button
 saveButton.addEventListener('click', saveDrawing);
 
-// Disable context menu on canvas (right-click)
 canvas.addEventListener('contextmenu', (e) => {
   e.preventDefault();
 });
 
-// Resize canvas to fit the window
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   context.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-// Initialize canvas size
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;

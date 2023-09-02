@@ -13,6 +13,16 @@
     <div class="controls">
         <input type="color" id="color-picker" value="#000000">
         <input type="range" id="line-thickness" min="1" max="20" value="5">
+        
+        <!-- Add radio buttons for tools -->
+        <label>Tools:</label>
+        <input type="radio" name="tool" id="pencil" value="pencil" checked>
+        <label for="pencil">Pencil</label>
+        <input type="radio" name="tool" id="brush" value="brush">
+        <label for="brush">Brush</label>
+        <input type="radio" name="tool" id="eraser" value="eraser">
+        <label for="eraser">Eraser</label>
+
         <button id="clear-button">Clear Canvas</button>
         <button id="save-button">Save Drawing</button>
     </div>
