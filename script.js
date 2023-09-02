@@ -62,6 +62,18 @@ function drawCircle(x, y, radius) {
   context.stroke();
 }
 
+function drawTriangle(x, y, size) {
+  context.strokeStyle = currentColor;
+  context.lineWidth = currentLineThickness;
+  context.beginPath();
+  const halfSize = size / 2;
+  context.moveTo(x, y - halfSize);
+  context.lineTo(x - halfSize, y + halfSize);
+  context.lineTo(x + halfSize, y + halfSize);
+  context.closePath();
+  context.stroke();
+}
+
 function drawShape(e) {
   if (!isDrawing) return;
 
@@ -69,21 +81,22 @@ function drawShape(e) {
   const y = e.clientY - canvas.getBoundingClientRect().top;
 
   if (currentTool === 'rectangle') {
-    const width = currentLineThickness * 4; // Adjust the multiplier as needed
-    const height = currentLineThickness * 4; // Adjust the multiplier as needed
+    const width = currentLineThickness * 4;
+    const height = currentLineThickness * 4;
     drawRectangle(x - width / 2, y - height / 2, width, height);
   } else if (currentTool === 'circle') {
-    const radius = currentLineThickness * 2; // Adjust the multiplier as needed
+    const radius = currentLineThickness * 2;
     drawCircle(x, y, radius);
+  } else if (currentTool === 'triangle') {
+    const size = currentLineThickness * 4;
+    drawTriangle(x, y, size);
   }
 }
-
-
 
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mouseup', stopDrawing);
 canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mousemove', drawShape); // Add shape drawing to mousemove event
+canvas.addEventListener('mousemove', drawShape);
 
 canvas.addEventListener('touchstart', (e) => {
   e.preventDefault();
@@ -94,7 +107,7 @@ canvas.addEventListener('touchend', stopDrawing);
 canvas.addEventListener('touchmove', (e) => {
   e.preventDefault();
   draw(e.touches[0]);
-  drawShape(e.touches[0]); // Add shape drawing to touchmove event
+  drawShape(e.touches[0]);
 });
 
 clearButton.addEventListener('click', () => {
