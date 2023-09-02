@@ -7,13 +7,14 @@
     <title>Enhanced Canvas Drawing Game</title>
 </head>
 <body>
-    <canvas id="drawing-canvas" width="400" height="400"></canvas>
+    <div class="canvas-container">
+        <canvas id="drawing-canvas" width="400" height="400"></canvas>
+    </div>
     <div class="controls">
         <input type="color" id="color-picker" value="#000000">
         <input type="range" id="line-thickness" min="1" max="20" value="5">
         <button id="clear-button">Clear Canvas</button>
-<button id="save-button">Save Drawing</button>
-
+        <button id="save-button">Save Drawing</button>
     </div>
     <script src="script.js"></script>
 </body>
