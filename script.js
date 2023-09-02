@@ -28,23 +28,21 @@ function draw(e) {
   context.lineCap = 'round';
 
   if (currentTool === 'pencil') {
-    context.lineWidth = 2; // Narrower line for a pencil
+    context.lineWidth = 2;
   } else if (currentTool === 'brush' || currentTool === 'eraser') {
-    context.lineWidth = currentLineThickness; // Adjust line thickness for brush and eraser
+    context.lineWidth = currentLineThickness;
   }
 
+  const x = e.clientX - canvas.getBoundingClientRect().left;
+  const y = e.clientY - canvas.getBoundingClientRect().top;
+
   if (currentTool === 'pencil' || currentTool === 'brush') {
-    context.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+    context.lineTo(x, y);
     context.stroke();
     context.beginPath();
-    context.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
+    context.moveTo(x, y);
   } else if (currentTool === 'eraser') {
-    context.clearRect(
-      e.clientX - canvas.getBoundingClientRect().left - context.lineWidth / 2,
-      e.clientY - canvas.getBoundingClientRect().top - context.lineWidth / 2,
-      context.lineWidth,
-      context.lineWidth
-    );
+    context.clearRect(x - context.lineWidth / 2, y - context.lineWidth / 2, context.lineWidth, context.lineWidth);
   }
 }
 
@@ -73,8 +71,6 @@ colorPicker.addEventListener('input', (e) => {
 
 lineThickness.addEventListener('input', (e) => {
   currentLineThickness = e.target.value;
-
-  // Update line thickness for brush and eraser when slider changes
   if (currentTool === 'brush' || currentTool === 'eraser') {
     context.lineWidth = currentLineThickness;
   }
@@ -83,12 +79,10 @@ lineThickness.addEventListener('input', (e) => {
 for (const toolRadio of toolRadios) {
   toolRadio.addEventListener('change', (e) => {
     currentTool = e.target.value;
-
-    // Reset line thickness when changing tools
     if (currentTool === 'pencil') {
-      context.lineWidth = 2; // Narrower line for a pencil
+      context.lineWidth = 2;
     } else if (currentTool === 'brush' || currentTool === 'eraser') {
-      context.lineWidth = currentLineThickness; // Set to current slider value for brush and eraser
+      context.lineWidth = currentLineThickness;
     }
   });
 }
@@ -113,5 +107,6 @@ window.addEventListener('resize', () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
 });
 
+// Initialize canvas size
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;

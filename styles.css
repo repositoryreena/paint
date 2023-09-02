@@ -1,27 +1,70 @@
-/* Add CSS styles as needed */
+/* Reset some default styles */
+body, html {
+  margin: 0;
+  padding: 0;
+}
 
 /* Ensure the canvas container takes up the full viewport */
 .canvas-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  
-  /* Style for the canvas */
-  #drawing-canvas {
-    display: block;
-    background-color: white;
-  }
-  
-  /* Style for the controls */
-  .controls {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    display: flex;
-    gap: 10px;
-  }
-  
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+overflow: hidden;
+}
+
+/* Style for the canvas */
+#drawing-canvas {
+display: block;
+background-color: white;
+}
+
+/* Style for the controls */
+.controls {
+position: absolute;
+bottom: 20px;
+left: 20px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+/* Style for input elements */
+input[type="color"],
+input[type="range"] {
+width: 100%;
+padding: 5px;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+
+/* Style for radio buttons and labels */
+input[type="radio"] {
+margin-right: 5px;
+}
+
+/* Style for buttons */
+button {
+padding: 5px 10px;
+background-color: #007BFF;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+
+button:hover {
+background-color: #0056b3;
+}
+
+/* Style for the undo and redo buttons */
+#undo-button,
+#redo-button {
+background-color: #ff5722;
+}
+
+#undo-button:hover,
+#redo-button:hover {
+background-color: #dd4814;
+}
