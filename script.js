@@ -78,9 +78,14 @@ function drawTriangle(x, y, size) {
   context.stroke();
 }
 
+// ...
+
 function drawText(x, y) {
   const text = textInput.value;
   const selectedFont = fontSelector.value;
+
+  // Calculate text size based on the line thickness slider value
+  const textSize = currentLineThickness * 4;
 
   // Define font styles here
   const fontStyles = {
@@ -90,10 +95,28 @@ function drawText(x, y) {
     'Verdana, sans-serif': 'Verdana, sans-serif'
   };
 
-  context.font = `24px ${fontStyles[selectedFont]}`;
+  context.font = `${textSize}px ${fontStyles[selectedFont]}`;
   context.fillStyle = currentColor;
   context.fillText(text, x, y);
 }
+
+// Listen for changes in the line thickness slider value
+lineThickness.addEventListener('input', (e) => {
+  currentLineThickness = e.target.value;
+  if (currentTool === 'brush' || currentTool === 'eraser') {
+    context.lineWidth = currentLineThickness;
+  }
+
+  // Redraw text with the updated size when the slider changes
+  if (currentTool === 'text') {
+    const x = e.clientX - canvas.getBoundingClientRect().left;
+    const y = e.clientY - canvas.getBoundingClientRect().top;
+    drawText(x, y);
+  }
+});
+
+// ...
+
 
 function drawShape(e) {
   if (!isDrawing) return;
@@ -146,7 +169,15 @@ lineThickness.addEventListener('input', (e) => {
   if (currentTool === 'brush' || currentTool === 'eraser') {
     context.lineWidth = currentLineThickness;
   }
+  
+  // Update text size for the text tool
+  if (currentTool === 'text') {
+    const x = e.clientX - canvas.getBoundingClientRect().left;
+    const y = e.clientY - canvas.getBoundingClientRect().top;
+    drawText(x, y);
+  }
 });
+
 
 for (const toolRadio of toolRadios) {
   toolRadio.addEventListener('change', (e) => {
