@@ -2,7 +2,7 @@ const canvas = document.getElementById('drawing-canvas');
 const context = canvas.getContext('2d');
 const colorPicker = document.getElementById('color-picker');
 const lineThickness = document.getElementById('line-thickness');
-const clearButton = document.getElementById('clear-button');
+const clearButton = document.getElementById('clear-button'); // Add this line
 const saveButton = document.getElementById('save-button');
 const toolRadios = document.getElementsByName('tool');
 const textInput = document.getElementById('text-input');
@@ -163,3 +163,8 @@ window.addEventListener('resize', () => {
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+
+// Add event listener to clear button
+clearButton.addEventListener('click', () => {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+});
