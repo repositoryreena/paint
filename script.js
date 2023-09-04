@@ -1,3 +1,5 @@
+// JavaScript - script.js
+
 const canvas = document.getElementById('drawing-canvas');
 const context = canvas.getContext('2d');
 const colorPicker = document.getElementById('color-picker');
@@ -7,11 +9,13 @@ const saveButton = document.getElementById('save-button');
 const toolRadios = document.getElementsByName('tool');
 const textInput = document.getElementById('text-input');
 const fontSelector = document.getElementById('font-selector');
+const sunsetButton = document.getElementById('sunset-button'); // Add this line
 
 let isDrawing = false;
 let currentColor = colorPicker.value;
 let currentLineThickness = lineThickness.value;
 let currentTool = 'pencil';
+let sunsetEnabled = false; // Added variable to track sunset background
 
 WebFont.load({
   google: {
@@ -20,11 +24,32 @@ WebFont.load({
   active: initializeCanvas
 });
 
+// Function to update the background color based on the given color
+function updateBackground(color) {
+    const gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, 'rgb(255, 140, 0)'); // Sunset color
+
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+const sunsetColors = [
+    'orange', 'red', 'yellow', 'green', 'blue', 'purple', 'pink' // Add your desired colors here
+];
+
+let currentSunsetColorIndex = 0; // To keep track of the current sunset color
+
 function initializeCanvas() {
   context.font = `${currentLineThickness * 4}px 'Dancing Script', cursive`;
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Add sunset background by default
+  if (sunsetEnabled) {
+    updateBackground(currentColor);
+  }
 }
 
 function startDrawing(e) {
@@ -167,4 +192,16 @@ canvas.height = window.innerHeight;
 // Add event listener to clear button
 clearButton.addEventListener('click', () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+// Sunset background button click event
+sunsetButton.addEventListener('click', () => {
+  // Get the next sunset color from the array
+  const nextSunsetColor = sunsetColors[currentSunsetColorIndex];
+  
+  // Update the background with the next sunset color
+  updateBackground(nextSunsetColor);
+
+  // Increment the index for the next click
+  currentSunsetColorIndex = (currentSunsetColorIndex + 1) % sunsetColors.length;
 });
