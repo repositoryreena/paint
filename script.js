@@ -10,6 +10,7 @@ const toolRadios = document.getElementsByName('tool');
 const textInput = document.getElementById('text-input');
 const fontSelector = document.getElementById('font-selector');
 const sunsetButton = document.getElementById('sunset-button'); // Add this line
+const triangleRotationDropdown = document.getElementById('triangle-rotation'); // Add this line
 
 let isDrawing = false;
 let currentColor = colorPicker.value;
@@ -39,6 +40,22 @@ const sunsetColors = [
 ];
 
 let currentSunsetColorIndex = 0; // To keep track of the current sunset color
+
+// Define a variable to store the current triangle rotation angle
+let triangleRotation = 0;
+
+// Function to update the triangle's rotation and redraw it
+function updateTriangleRotation(degrees) {
+  triangleRotation = degrees;
+  
+  drawShape();
+}
+
+// Listen for changes in the dropdown menu to rotate the triangle
+triangleRotationDropdown.addEventListener('change', () => {
+  const selectedRotation = parseInt(triangleRotationDropdown.value);
+  updateTriangleRotation(selectedRotation);
+});
 
 function initializeCanvas() {
   context.font = `${currentLineThickness * 4}px 'Dancing Script', cursive`;
@@ -103,8 +120,8 @@ function drawText(x, y) {
 function drawShape(e) {
   if (!isDrawing) return;
 
-  const x = e.clientX - canvas.getBoundingClientRect().left;
-  const y = e.clientY - canvas.getBoundingClientRect().top;
+  const x = e ? e.clientX - canvas.getBoundingClientRect().left : canvas.width / 2;
+  const y = e ? e.clientY - canvas.getBoundingClientRect().top : canvas.height / 2;
 
   context.strokeStyle = currentColor;
   context.lineWidth = currentLineThickness;
@@ -121,20 +138,36 @@ function drawShape(e) {
     context.closePath();
   } else if (currentTool === 'triangle') {
     const size = currentLineThickness * 4;
+    
+    // Save the current transformation state
+    context.save();
+
+    // Translate to the triangle's position
+    context.translate(x, y);
+
+    // Rotate the triangle based on the rotation angle
+    context.rotate((triangleRotation * Math.PI) / 180); // Convert degrees to radians
+
+    // Draw the triangle
     context.beginPath();
-    context.moveTo(x, y - size / 2);
-    context.lineTo(x - size / 2, y + size / 2);
-    context.lineTo(x + size / 2, y + size / 2);
+    context.moveTo(0, -size / 2);
+    context.lineTo(-size / 2, size / 2);
+    context.lineTo(size / 2, size / 2);
     context.closePath();
     context.stroke();
+
+    // Restore the previous transformation state
+    context.restore();
   }
 }
 
+// Add event listeners for mouse actions
 canvas.addEventListener('mousedown', startDrawing);
 canvas.addEventListener('mouseup', stopDrawing);
 canvas.addEventListener('mousemove', draw);
 canvas.addEventListener('mousemove', drawShape);
 
+// Event listeners for color and line thickness changes
 colorPicker.addEventListener('input', (e) => {
   currentColor = e.target.value;
 });
@@ -152,6 +185,7 @@ lineThickness.addEventListener('input', (e) => {
   }
 });
 
+// Event listener for selecting drawing tools
 for (const toolRadio of toolRadios) {
   toolRadio.addEventListener('change', (e) => {
     currentTool = e.target.value;
@@ -166,6 +200,7 @@ for (const toolRadio of toolRadios) {
   });
 }
 
+// Function to save the drawing as an image
 function saveDrawing() {
   const image = canvas.toDataURL('image/png');
   const link = document.createElement('a');
@@ -174,22 +209,22 @@ function saveDrawing() {
   link.click();
 }
 
+// Event listener for the save button
 saveButton.addEventListener('click', saveDrawing);
 
+// Prevent the context menu from appearing on right-click
 canvas.addEventListener('contextmenu', (e) => {
   e.preventDefault();
 });
 
+// Event listener to resize the canvas when the window size changes
 window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   context.clearRect(0, 0, canvas.width, canvas.height);
 });
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-// Add event listener to clear button
+// Event listener for the clear button
 clearButton.addEventListener('click', () => {
   context.clearRect(0, 0, canvas.width, canvas.height);
 });
